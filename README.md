@@ -1,4 +1,7 @@
-pysattracker
-============
+#pysattracker
 
-Python library for tracking satellite overpasses and calculating doppler shift.
+Python library for calculating azimuth, elevation, doppler shift etc for satellite overflights.
+
+#depentencies
+    sudo pip install pyephem
+

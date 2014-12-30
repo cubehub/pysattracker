@@ -7,9 +7,11 @@ Python library for calculating azimuth, elevation, doppler shift etc for satelli
 
 #install
 There is no special library installation available. Just clone it into your project directory.
+
     git clone https://github.com/cubehub/pysattracker.git
 
 Or it is better to use it as a submodule if your project is already using git for version control.
+
     git submodule add https://github.com/cubehub/pysattracker.git
 
 #example

@@ -1,15 +1,21 @@
+'''
 
-import sys
+https://github.com/cubehub/pysattracker/tree/master
+https://rhodesmill.org/pyephem/rise-set.html
+'''
 import time
 import datetime
-from math import *
 
+from math import sin, cos, radians, degrees
+from pynmeagps import llh2ecef
 import ephem
 
 class Tracker():
 
     def __init__(self, satellite, groundstation=("59.4000", "24.8170", "0")):
         self.groundstation = ephem.Observer()
+        self.groundstation.pressure = 0
+        #self.groundstation.horizon = '-0:34' # 1⁄60 of a degree of an angle
         self.groundstation.lat = groundstation[0]
         self.groundstation.lon = groundstation[1]
         self.groundstation.elevation = int(groundstation[2])
@@ -19,7 +25,7 @@ class Tracker():
     def set_epoch(self, epoch=time.time()):
         ''' sets epoch when parameters are observed '''
 
-        self.groundstation.date = datetime.datetime.utcfromtimestamp(epoch)
+        self.groundstation.date = datetime.datetime.fromtimestamp(epoch)
         self.satellite.compute(self.groundstation)
 
     def azimuth(self):
@@ -42,7 +48,7 @@ class Tracker():
         ''' returns satellite range in meters '''
         return self.satellite.range
 
-    def doppler(self, frequency_hz=437505000):
+    def doppler(self, frequency_hz=437_505_000):
         ''' returns doppler shift in hertz '''
         return -self.satellite.range_velocity / 299792458. * frequency_hz
 
@@ -82,22 +88,27 @@ class Tracker():
 
 if __name__ == "__main__":
     # taken from: http://celestrak.com/NORAD/elements/cubesat.txt
-    ec1_tle = { "name": "ESTCUBE 1", \
-                "tle1": "1 39161U 13021C   14364.09038846  .00002738  00000-0  45761-3 0  7997", \
-                "tle2": "2 39161  98.0855  83.4746 0010705 128.9405 231.2717 14.70651844 88381"}
+    ec1_tle = {
+        "name": "ESTCUBE 1",
+        "tle1": "1 39161U 13021C   24194.14473294  .00002706  00000+0  39461-3 0  9991",
+        "tle2": "2 39161  97.8269 259.8501 0009982 143.1860 217.0037 14.76566041600819",
+    }
 
     # http://www.gpscoordinates.eu/show-gps-coordinates.php
     tallinn = ("59.4000", "24.8170", "0")
 
     tracker = Tracker(satellite=ec1_tle, groundstation=tallinn)
+    
+    #diff = time.time() - tracker.satellite.epoch.datetime().timestamp()
+    diff = 0 
 
     while 1:
-        tracker.set_epoch(time.time())
-
-        print "az         : %0.1f" % tracker.azimuth()
-        print "ele        : %0.1f" % tracker.elevation()
-        print "range      : %0.0f km" % (tracker.range()/1000)
-        print "range rate : %0.3f km/s" % (tracker.satellite.range_velocity/1000)
-        print "doppler    : %0.0f Hz" % (tracker.doppler(100e6))
+        tracker.set_epoch(time.time()- diff)
+        print ("datetime:", tracker.groundstation.date.datetime())
+        print ("az         : %0.1f" % tracker.azimuth())
+        print ("ele        : %0.1f" % tracker.elevation())
+        print ("range      : %0.0f km" % (tracker.range()/1000))
+        print ("range rate : %0.3f km/s" % (tracker.satellite.range_velocity/1000))
+        print ("doppler    : %0.0f Hz" % (tracker.doppler(100e6)))
 
         time.sleep(0.5)

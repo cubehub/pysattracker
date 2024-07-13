@@ -25,7 +25,7 @@ class Tracker():
     def set_epoch(self, epoch=time.time()):
         ''' sets epoch when parameters are observed '''
 
-        self.groundstation.date = datetime.datetime.fromtimestamp(epoch)
+        self.groundstation.date = datetime.datetime.fromtimestamp(epoch,tz=datetime.UTC)
         self.satellite.compute(self.groundstation)
 
     def azimuth(self):

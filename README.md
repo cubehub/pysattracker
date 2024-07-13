@@ -1,11 +1,11 @@
-#pysattracker
+# pysattracker
 
 Python library for calculating azimuth, elevation, doppler shift etc for satellite overflights.
 
-#dependencies
+# dependencies
     sudo pip install pyephem
 
-#install
+# install
 There is no special library installation available. Just clone it into your project directory.
 
     git clone https://github.com/cubehub/pysattracker.git
@@ -14,7 +14,7 @@ Or it is better to use it as a submodule if your project is already using git fo
 
     git submodule add https://github.com/cubehub/pysattracker.git
 
-#example
+# example
 
 ```python
 import sys
